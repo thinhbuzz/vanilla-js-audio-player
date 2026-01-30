@@ -136,7 +136,7 @@ export class AudioPlayer {
     };
   }
 
-  setOptions(partial = {}, silent = false) {
+  setOptions(partial = {}) {
     if (!partial || typeof partial !== "object") return this.getOptions();
 
     const previous = { ...this._options };
@@ -284,18 +284,6 @@ export class AudioPlayer {
     if ("src" in partial) {
       if (this._options.src) {
         this.load(this._options.src, {}, previous.src);
-      }
-    }
-
-    if (!silent) {
-      if (previous.volume !== this._options.volume) {
-        this.emit("volumechange", { volume: this._options.volume });
-      }
-      if (previous.muted !== this._options.muted) {
-        this.emit("mutechange", { muted: this._options.muted });
-      }
-      if (previous.playbackRate !== this._audio.playbackRate) {
-        this.emit("ratechange", { rate: this._audio.playbackRate });
       }
     }
 
