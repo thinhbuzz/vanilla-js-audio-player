@@ -3,9 +3,11 @@ export const DEFAULT_OPTIONS = {
   volume: 70, // 0..100
   muted: false,
   playbackRate: 1,
+  playbackRateMin: 0.2,
+  playbackRateMax: 2,
+  playbackRateStep: 0.05,
   seekStep: 10,
   allowDownload: true,
-  rates: [0.5, 0.75, 1, 1.25, 1.5, 2],
   showTime: true,
   theme: "auto", // "auto" | "light" | "dark"
   downloadFilename: null,
@@ -34,18 +36,6 @@ export function clampNumber(value, min, max) {
   return Math.min(max, Math.max(min, num));
 }
 
-export function normalizeRates(rates) {
-  if (!Array.isArray(rates)) return [...DEFAULT_OPTIONS.rates];
-  const cleaned = rates
-    .map((rate) => Number(rate))
-    .filter((rate) => Number.isFinite(rate) && rate > 0);
-  const unique = [];
-  cleaned.forEach((rate) => {
-    if (!unique.includes(rate)) unique.push(rate);
-  });
-  return unique.length ? unique : [...DEFAULT_OPTIONS.rates];
-}
-
 export function normalizeTheme(theme) {
   if (theme === "light" || theme === "dark" || theme === "auto") return theme;
   return DEFAULT_OPTIONS.theme;
@@ -61,7 +51,7 @@ export function formatTime(seconds) {
 export function formatRate(rate) {
   if (!Number.isFinite(rate)) return "1x";
   const rounded = Math.round(rate * 100) / 100;
-  const text = rounded.toFixed(2).replace(/\.?0+$/, "");
+  const text = rounded.toFixed(2);
   return `${text}x`;
 }
 
@@ -137,7 +127,6 @@ export class AudioPlayer {
   getOptions() {
     return {
       ...this._options,
-      rates: [...this._options.rates],
     };
   }
 
@@ -155,7 +144,7 @@ export class AudioPlayer {
   setOptions(partial = {}, silent = false) {
     if (!partial || typeof partial !== "object") return this.getOptions();
 
-    const previous = { ...this._options, rates: [...this._options.rates] };
+    const previous = { ...this._options };
     const next = { ...this._options };
     const changedKeys = [];
 
@@ -176,7 +165,11 @@ export class AudioPlayer {
     }
 
     if ("playbackRate" in partial) {
-      const rate = clampNumber(partial.playbackRate, 0.25, 4);
+      const rate = clampNumber(
+        partial.playbackRate,
+        next.playbackRateMin,
+        next.playbackRateMax
+      );
       if (rate !== null && rate !== next.playbackRate) {
         next.playbackRate = rate;
         changedKeys.push("playbackRate");
@@ -199,12 +192,44 @@ export class AudioPlayer {
       }
     }
 
-    if ("rates" in partial) {
-      const rates = normalizeRates(partial.rates);
-      if (JSON.stringify(rates) !== JSON.stringify(next.rates)) {
-        next.rates = rates;
-        changedKeys.push("rates");
+    if ("playbackRateMin" in partial) {
+      const minRate = clampNumber(partial.playbackRateMin, 0.2, 4);
+      if (minRate !== null && minRate !== next.playbackRateMin) {
+        next.playbackRateMin = minRate;
+        changedKeys.push("playbackRateMin");
       }
+    }
+
+    if ("playbackRateMax" in partial) {
+      const maxRate = clampNumber(partial.playbackRateMax, 0.2, 4);
+      if (maxRate !== null && maxRate !== next.playbackRateMax) {
+        next.playbackRateMax = maxRate;
+        changedKeys.push("playbackRateMax");
+      }
+    }
+
+    if ("playbackRateStep" in partial) {
+      const step = clampNumber(partial.playbackRateStep, 0.01, 1);
+      if (step !== null && step !== next.playbackRateStep) {
+        next.playbackRateStep = step;
+        changedKeys.push("playbackRateStep");
+      }
+    }
+
+    if (next.playbackRateMin > next.playbackRateMax) {
+      const temp = next.playbackRateMin;
+      next.playbackRateMin = next.playbackRateMax;
+      next.playbackRateMax = temp;
+    }
+
+    const clampedRate = clampNumber(
+      next.playbackRate,
+      next.playbackRateMin,
+      next.playbackRateMax
+    );
+    if (clampedRate !== null && clampedRate !== next.playbackRate) {
+      next.playbackRate = clampedRate;
+      changedKeys.push("playbackRate");
     }
 
     if ("showTime" in partial) {
@@ -340,7 +365,11 @@ export class AudioPlayer {
   }
 
   setPlaybackRate(rate) {
-    const value = clampNumber(rate, 0.25, 4);
+    const value = clampNumber(
+      rate,
+      this._options.playbackRateMin,
+      this._options.playbackRateMax
+    );
     if (value === null) return;
     this._audio.playbackRate = value;
   }
@@ -389,10 +418,25 @@ export class AudioPlayer {
     Object.keys(override || {}).forEach((key) => {
       if (includeUnknown || key in base) merged[key] = override[key];
     });
-    merged.rates = normalizeRates(merged.rates);
     merged.theme = normalizeTheme(merged.theme);
     merged.volume = clampNumber(merged.volume, 0, 100) ?? base.volume;
-    merged.playbackRate = clampNumber(merged.playbackRate, 0.25, 4) ?? 1;
+    merged.playbackRateMin =
+      clampNumber(merged.playbackRateMin, 0.2, 4) ?? base.playbackRateMin;
+    merged.playbackRateMax =
+      clampNumber(merged.playbackRateMax, 0.25, 4) ?? base.playbackRateMax;
+    merged.playbackRateStep =
+      clampNumber(merged.playbackRateStep, 0.01, 1) ?? base.playbackRateStep;
+    if (merged.playbackRateMin > merged.playbackRateMax) {
+      const temp = merged.playbackRateMin;
+      merged.playbackRateMin = merged.playbackRateMax;
+      merged.playbackRateMax = temp;
+    }
+    merged.playbackRate =
+      clampNumber(
+        merged.playbackRate,
+        merged.playbackRateMin,
+        merged.playbackRateMax
+      ) ?? 1;
     merged.seekStep = clampNumber(merged.seekStep, 1, 120) ?? base.seekStep;
     merged.muted = Boolean(merged.muted);
     merged.allowDownload = Boolean(merged.allowDownload);
@@ -506,8 +550,8 @@ export class AudioPlayer {
     ratePopoverRow.appendChild(ratePopoverValue);
     const rateSlider = createElement("input", "ap-rate-slider");
     rateSlider.type = "range";
-    rateSlider.min = "0.5";
-    rateSlider.max = "2";
+    rateSlider.min = String(this._options.playbackRateMin);
+    rateSlider.max = String(this._options.playbackRateMax);
     rateSlider.step = "0.1";
     rateSlider.setAttribute("aria-label", "Playback rate");
     ratePopover.appendChild(ratePopoverRow);
@@ -726,12 +770,9 @@ export class AudioPlayer {
 
   _updateRateOptions() {
     const { rateSlider } = this._dom;
-    const rates = [...this._options.rates].sort((a, b) => a - b);
-    const min = rates[0];
-    const max = rates[rates.length - 1];
-    const step = 0.1;
-    rateSlider.min = String(min);
-    rateSlider.max = String(max);
+    const step = this._options.playbackRateStep;
+    rateSlider.min = String(this._options.playbackRateMin);
+    rateSlider.max = String(this._options.playbackRateMax);
     rateSlider.step = String(step);
   }
 

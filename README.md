@@ -1,6 +1,6 @@
 # Audio Player (Vanilla JS + CSS)
 
-Thư viện Audio Player nhẹ, không phụ thuộc thư viện ngoài. Hỗ trợ ES Module và UMD/IIFE build để nhúng nhanh.
+Thư viện Audio Player nhẹ, không phụ thuộc thư viện ngoài. Hỗ trợ ES Module để nhúng nhanh.
 
 ## Cấu trúc thư mục
 
@@ -86,9 +86,12 @@ const player = new AudioPlayer("#player", {
   volume: 70,          // 0..100
   muted: false,
   playbackRate: 1,
+  playbackRateMin: 0.5,
+  playbackRateMin: 0.2,
+  playbackRateMax: 2,
+  playbackRateStep: 0.05,
   seekStep: 10,
   allowDownload: true,
-  rates: [0.5,0.75,1,1.25,1.5,2],
   showTime: true,
   theme: "auto" | "light" | "dark",
   downloadFilename: null,

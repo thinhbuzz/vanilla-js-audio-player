@@ -12,7 +12,7 @@ playerOne.load("./audio/file_example_MP3.mp3", {
 
 const playerTwo = new AudioPlayer("#player-two", {
   volume: 50,
-  playbackRate: 1.25,
+  playbackRate: 1.2,
   theme: "dark",
   allowDownload: false,
   events: {
