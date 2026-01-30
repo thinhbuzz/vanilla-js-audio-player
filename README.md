@@ -102,6 +102,7 @@ const player = new AudioPlayer("#player", {
 ## API Reference (ngắn gọn)
 
 - `setOptions(optionsPartial)`
+- `resetOptions(optionsPartial)`
 - `getOptions()`
 - `load(src, meta?)`  
   `meta: { title, filename, allowDownload }`

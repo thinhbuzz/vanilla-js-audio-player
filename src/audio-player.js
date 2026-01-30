@@ -125,6 +125,10 @@ export class AudioPlayer {
     };
   }
 
+  resetOptions(partial = {}) {
+    return this.setOptions({ ...DEFAULT_OPTIONS, ...partial });
+  }
+
   _getLiveOptions() {
     const base = this.getOptions();
     if (!this._audio) return base;
@@ -917,6 +921,7 @@ export class AudioPlayer {
     this.emit("download", { src, filename });
 
     const link = document.createElement("a");
+    link.target = "_blank";
     link.href = src;
     if (filename) link.download = filename;
     link.rel = "noopener";
