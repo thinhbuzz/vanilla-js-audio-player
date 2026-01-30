@@ -308,6 +308,10 @@ export class AudioPlayer {
     if (!src || typeof src !== "string") return;
     const previous = this._audio.src;
 
+    this._audio.pause();
+    this._updatePlayState();
+    this._stopProgressLoop();
+
     this._meta.title =
       typeof meta.title === "string" ? meta.title.trim() : "";
     this._meta.filename =
