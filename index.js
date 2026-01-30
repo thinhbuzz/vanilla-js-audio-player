@@ -18,6 +18,7 @@ const playerTwo = new AudioPlayer("#player-two", {
   events: {
     ratechange: (payload) => console.log("ratechange:", payload),
     volumechange: (payload) => console.log("volumechange:", payload),
+    optionschange: ({ changedKeys, options }) => console.log("optionschange:", changedKeys, options),
   },
 });
 playerTwo.load("./audio/file_example_WAV.wav", {

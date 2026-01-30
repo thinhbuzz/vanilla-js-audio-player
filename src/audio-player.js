@@ -141,6 +141,17 @@ export class AudioPlayer {
     };
   }
 
+  _getLiveOptions() {
+    const base = this.getOptions();
+    if (!this._audio) return base;
+    return {
+      ...base,
+      volume: Math.round(this._audio.volume * 100),
+      muted: this._audio.muted,
+      playbackRate: this._audio.playbackRate,
+    };
+  }
+
   setOptions(partial = {}, silent = false) {
     if (!partial || typeof partial !== "object") return this.getOptions();
 
@@ -882,7 +893,7 @@ export class AudioPlayer {
     if (!Array.isArray(changedKeys) || !changedKeys.length) return;
     this.emit("optionschange", {
       changedKeys,
-      options: this.getOptions(),
+      options: this._getLiveOptions(),
     });
   }
 }
