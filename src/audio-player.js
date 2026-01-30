@@ -747,7 +747,10 @@ export class AudioPlayer {
     );
 
     if (this._options.src) {
-      this._audio.src = this._options.src;
+      const currentSrc = this._audio.getAttribute("src") || "";
+      if (currentSrc !== this._options.src) {
+        this._audio.src = this._options.src;
+      }
     }
     this._updateTitle();
   }
