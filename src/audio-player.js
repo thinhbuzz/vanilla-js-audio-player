@@ -36,11 +36,6 @@ export function clampNumber(value, min, max) {
   return Math.min(max, Math.max(min, num));
 }
 
-export function normalizeTheme(theme) {
-  if (theme === "light" || theme === "dark" || theme === "auto") return theme;
-  return DEFAULT_OPTIONS.theme;
-}
-
 export function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
   const mins = Math.floor(seconds / 60);
@@ -241,7 +236,10 @@ export class AudioPlayer {
     }
 
     if ("theme" in partial) {
-      const theme = normalizeTheme(partial.theme);
+      const theme =
+        typeof partial.theme === "string" && partial.theme.trim()
+          ? partial.theme.trim()
+          : DEFAULT_OPTIONS.theme;
       if (theme !== next.theme) {
         next.theme = theme;
         changedKeys.push("theme");
@@ -422,7 +420,10 @@ export class AudioPlayer {
     Object.keys(override || {}).forEach((key) => {
       if (includeUnknown || key in base) merged[key] = override[key];
     });
-    merged.theme = normalizeTheme(merged.theme);
+    merged.theme =
+      typeof merged.theme === "string" && merged.theme.trim()
+        ? merged.theme.trim()
+        : base.theme;
     merged.volume = clampNumber(merged.volume, 0, 100) ?? base.volume;
     merged.playbackRateMin =
       clampNumber(merged.playbackRateMin, 0.2, 4) ?? base.playbackRateMin;
