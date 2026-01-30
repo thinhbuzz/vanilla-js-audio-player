@@ -283,7 +283,7 @@ export class AudioPlayer {
 
     if ("src" in partial) {
       if (this._options.src) {
-        this.load(this._options.src);
+        this.load(this._options.src, {}, previous.src);
       }
     }
 
@@ -302,9 +302,9 @@ export class AudioPlayer {
     return this.getOptions();
   }
 
-  load(src, meta = {}) {
+  load(src, meta = {}, previousSrc = null) {
     if (!src || typeof src !== "string") return;
-    const previous = this._audio.src;
+    const previous = previousSrc ?? this._audio.src;
 
     this._audio.pause();
     this._updatePlayState();
@@ -433,7 +433,7 @@ export class AudioPlayer {
     merged.playbackRateMin =
       clampNumber(merged.playbackRateMin, 0.2, 4) ?? base.playbackRateMin;
     merged.playbackRateMax =
-      clampNumber(merged.playbackRateMax, 0.25, 4) ?? base.playbackRateMax;
+      clampNumber(merged.playbackRateMax, 0.2, 4) ?? base.playbackRateMax;
     merged.playbackRateStep =
       clampNumber(merged.playbackRateStep, 0.01, 1) ?? base.playbackRateStep;
     if (merged.playbackRateMin > merged.playbackRateMax) {
