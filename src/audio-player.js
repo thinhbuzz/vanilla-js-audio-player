@@ -1,6 +1,6 @@
 export const DEFAULT_OPTIONS = {
   src: "",
-  volume: 70, // 0..100
+  volume: 100, // 0..100
   muted: false,
   playbackRate: 1,
   playbackRateMin: 0.2,
@@ -322,6 +322,11 @@ export class AudioPlayer {
     this._options.src = src;
     this._audio.src = src;
     this._audio.load();
+    this._audio.playbackRate = this._options.playbackRate;
+    this._updateRateUI();
+    this._audio.volume = this._options.volume / 100;
+    this._audio.muted = this._options.muted;
+    this._updateVolumeUI(true);
     this._updateTitle();
     this._syncDownloadState();
     this._dom.currentTime.textContent = "0:00";
@@ -701,6 +706,12 @@ export class AudioPlayer {
     );
 
     this._bind(this._audio, "loadedmetadata", () => {
+      // Some browsers may reset these after new src load.
+      this._audio.playbackRate = this._options.playbackRate;
+      this._audio.volume = this._options.volume / 100;
+      this._audio.muted = this._options.muted;
+      this._updateRateUI();
+      this._updateVolumeUI(true);
       this._updateDuration();
       this.emit("ready", {
         duration: this._audio.duration,
