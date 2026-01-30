@@ -1,0 +1,20 @@
+{
+  "name": "vanilla-audio-player",
+  "version": "0.1.0",
+  "description": "Vanilla JS audio player with custom UI and events.",
+  "type": "module",
+  "main": "src/audio-player.js",
+  "module": "src/audio-player.js",
+  "style": "src/audio-player.css",
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "audio",
+    "player",
+    "vanilla",
+    "javascript",
+    "ui"
+  ],
+  "license": "MIT"
+}
