@@ -362,6 +362,7 @@ export class AudioPlayer {
     const to = Math.max(0, Math.min(this._audio.duration, seconds));
     if (from === to) return;
     this._audio.currentTime = to;
+    this._syncProgress();
     this.emit("seek", { from, to });
   }
 
