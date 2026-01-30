@@ -141,13 +141,11 @@ export class AudioPlayer {
 
     const previous = { ...this._options };
     const next = { ...this._options };
-    const changedKeys = [];
 
     if ("volume" in partial) {
       const volume = clampNumber(partial.volume, 0, 100);
       if (volume !== null && volume !== next.volume) {
         next.volume = volume;
-        changedKeys.push("volume");
       }
     }
 
@@ -155,7 +153,6 @@ export class AudioPlayer {
       const muted = Boolean(partial.muted);
       if (muted !== next.muted) {
         next.muted = muted;
-        changedKeys.push("muted");
       }
     }
 
@@ -167,7 +164,6 @@ export class AudioPlayer {
       );
       if (rate !== null && rate !== next.playbackRate) {
         next.playbackRate = rate;
-        changedKeys.push("playbackRate");
       }
     }
 
@@ -175,7 +171,6 @@ export class AudioPlayer {
       const seekStep = clampNumber(partial.seekStep, 1, 120);
       if (seekStep !== null && seekStep !== next.seekStep) {
         next.seekStep = seekStep;
-        changedKeys.push("seekStep");
       }
     }
 
@@ -183,7 +178,6 @@ export class AudioPlayer {
       const allowDownload = Boolean(partial.allowDownload);
       if (allowDownload !== next.allowDownload) {
         next.allowDownload = allowDownload;
-        changedKeys.push("allowDownload");
       }
     }
 
@@ -191,7 +185,6 @@ export class AudioPlayer {
       const minRate = clampNumber(partial.playbackRateMin, 0.2, 4);
       if (minRate !== null && minRate !== next.playbackRateMin) {
         next.playbackRateMin = minRate;
-        changedKeys.push("playbackRateMin");
       }
     }
 
@@ -199,7 +192,6 @@ export class AudioPlayer {
       const maxRate = clampNumber(partial.playbackRateMax, 0.2, 4);
       if (maxRate !== null && maxRate !== next.playbackRateMax) {
         next.playbackRateMax = maxRate;
-        changedKeys.push("playbackRateMax");
       }
     }
 
@@ -207,7 +199,6 @@ export class AudioPlayer {
       const step = clampNumber(partial.playbackRateStep, 0.01, 1);
       if (step !== null && step !== next.playbackRateStep) {
         next.playbackRateStep = step;
-        changedKeys.push("playbackRateStep");
       }
     }
 
@@ -224,14 +215,12 @@ export class AudioPlayer {
     );
     if (clampedRate !== null && clampedRate !== next.playbackRate) {
       next.playbackRate = clampedRate;
-      changedKeys.push("playbackRate");
     }
 
     if ("showTime" in partial) {
       const showTime = Boolean(partial.showTime);
       if (showTime !== next.showTime) {
         next.showTime = showTime;
-        changedKeys.push("showTime");
       }
     }
 
@@ -242,7 +231,6 @@ export class AudioPlayer {
           : DEFAULT_OPTIONS.theme;
       if (theme !== next.theme) {
         next.theme = theme;
-        changedKeys.push("theme");
       }
     }
 
@@ -254,7 +242,6 @@ export class AudioPlayer {
           : null;
       if (filename !== next.downloadFilename) {
         next.downloadFilename = filename;
-        changedKeys.push("downloadFilename");
       }
     }
 
@@ -266,7 +253,6 @@ export class AudioPlayer {
           : DEFAULT_OPTIONS.ariaLabelPrefix;
       if (ariaLabelPrefix !== next.ariaLabelPrefix) {
         next.ariaLabelPrefix = ariaLabelPrefix;
-        changedKeys.push("ariaLabelPrefix");
       }
     }
 
@@ -274,7 +260,6 @@ export class AudioPlayer {
       const src = typeof partial.src === "string" ? partial.src : "";
       if (src !== next.src) {
         next.src = src;
-        changedKeys.push("src");
       }
     }
 
