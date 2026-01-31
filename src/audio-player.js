@@ -628,6 +628,8 @@ export class AudioPlayer {
     this._container.appendChild(root);
 
     this._dom = {
+      titleRow,
+      controls,
       root,
       title,
       playBtn,
