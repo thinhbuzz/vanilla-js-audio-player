@@ -492,11 +492,18 @@ export class AudioPlayer {
       "aria-label",
       `Rewind ${this._options.seekStep} seconds`
     );
-    rewindBtn.innerHTML = `
-      <svg viewBox="0 0 1024 1024" class="ap-icon ap-icon-rewind" aria-hidden="true">
-        <path fill="currentColor" d="M258.471 323.053c94.182-126.513 270.298-165.203 410.222-84.418 150.758 87.040 202.411 279.813 115.371 430.571s-279.813 202.411-430.571 115.371c-61.424-35.463-107.948-89.4-134.169-153.673-7.677-18.818-29.156-27.85-47.974-20.173s-27.85 29.156-20.173 47.974c32.339 79.269 89.818 145.906 165.517 189.611 185.96 107.364 423.747 43.649 531.111-142.311s43.649-423.747-142.311-531.111c-172.433-99.554-389.428-52.014-505.682 103.69l-27.226-78.49c-6.66-19.202-27.626-29.368-46.828-22.708s-29.368 27.626-22.708 46.828l52.434 151.164c5.36 15.452 20.275 25.513 36.61 24.694l159.799-8.011c20.299-1.018 35.929-18.298 34.911-38.596s-18.298-35.929-38.596-34.911l-89.738 4.499z" />
-      </svg>
-    `;
+    rewindBtn.innerHTML = `<svg viewBox="0 0 1024 1024" class="ap-icon ap-icon-forward" aria-hidden="true">
+  <path fill="currentColor" d="M511.4 124C290.5 124.3 112 303 112 523.9c0 128 60.2 242 153.8 315.2l-37.5 48c-4.1 5.3-.3 13 6.3 12.9l167-.8c5.2 0 9-4.9 7.7-9.9L369.8 727a8 8 0 0 0-14.1-3L315 776.1c-10.2-8-20-16.7-29.3-26a318.64 318.64 0 0 1-68.6-101.7C200.4 609 192 567.1 192 523.9s8.4-85.1 25.1-124.5c16.1-38.1 39.2-72.3 68.6-101.7 29.4-29.4 63.6-52.5 101.7-68.6C426.9 212.4 468.8 204 512 204s85.1 8.4 124.5 25.1c38.1 16.1 72.3 39.2 101.7 68.6 29.4 29.4 52.5 63.6 68.6 101.7 16.7 39.4 25.1 81.3 25.1 124.5s-8.4 85.1-25.1 124.5a318.64 318.64 0 0 1-68.6 101.7c-7.5 7.5-15.3 14.5-23.4 21.2a7.93 7.93 0 0 0-1.2 11.1l39.4 50.5c2.8 3.5 7.9 4.1 11.4 1.3C854.5 760.8 912 649.1 912 523.9c0-221.1-179.4-400.2-400.6-399.9z"/>
+  <text x="512" y="560"
+        fill="currentColor"
+        font-weight="800"
+        font-size="300"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        data-num="${this._options.seekStep}">
+    <tspan>${this._options.seekStep}</tspan>
+  </text>
+</svg>`;
 
     const forwardBtn = createElement(
       "button",
@@ -507,11 +514,21 @@ export class AudioPlayer {
       "aria-label",
       `Forward ${this._options.seekStep} seconds`
     );
-    forwardBtn.innerHTML = `
-      <svg viewBox="0 0 1024 1024" class="ap-icon ap-icon-forward" aria-hidden="true">
-        <path fill="currentColor" d="M765.529 323.053c-94.182-126.513-270.298-165.203-410.222-84.418-150.758 87.040-202.411 279.813-115.371 430.571s279.813 202.411 430.571 115.371c61.424-35.463 107.948-89.4 134.169-153.673 7.677-18.818 29.156-27.85 47.974-20.173s27.85 29.156 20.173 47.974c-32.339 79.269-89.818 145.906-165.517 189.611-185.96 107.364-423.747 43.649-531.111-142.311s-43.649-423.747 142.311-531.111c172.433-99.554 389.428-52.014 505.682 103.69l27.226-78.49c6.66-19.202 27.626-29.368 46.828-22.708s29.368 27.626 22.708 46.828l-52.434 151.164c-5.36 15.452-20.275 25.513-36.61 24.694l-159.799-8.011c-20.299-1.018-35.929-18.298-34.911-38.596s18.298-35.929 38.596-34.911l89.738 4.499z" />
-      </svg>
-    `;
+    forwardBtn.innerHTML = `<svg viewBox="0 0 1024 1024" class="ap-icon ap-icon-forward" aria-hidden="true">
+  <g transform="translate(1024 0) scale(-1 1)">
+    <path fill="currentColor" d="M511.4 124C290.5 124.3 112 303 112 523.9c0 128 60.2 242 153.8 315.2l-37.5 48c-4.1 5.3-.3 13 6.3 12.9l167-.8c5.2 0 9-4.9 7.7-9.9L369.8 727a8 8 0 0 0-14.1-3L315 776.1c-10.2-8-20-16.7-29.3-26a318.64 318.64 0 0 1-68.6-101.7C200.4 609 192 567.1 192 523.9s8.4-85.1 25.1-124.5c16.1-38.1 39.2-72.3 68.6-101.7 29.4-29.4 63.6-52.5 101.7-68.6C426.9 212.4 468.8 204 512 204s85.1 8.4 124.5 25.1c38.1 16.1 72.3 39.2 101.7 68.6 29.4 29.4 52.5 63.6 68.6 101.7 16.7 39.4 25.1 81.3 25.1 124.5s-8.4 85.1-25.1 124.5a318.64 318.64 0 0 1-68.6 101.7c-7.5 7.5-15.3 14.5-23.4 21.2a7.93 7.93 0 0 0-1.2 11.1l39.4 50.5c2.8 3.5 7.9 4.1 11.4 1.3C854.5 760.8 912 649.1 912 523.9c0-221.1-179.4-400.2-400.6-399.9z"/>
+  </g>
+
+  <text x="512" y="560"
+        fill="currentColor"
+        font-weight="800"
+        font-size="300"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        data-num="${this._options.seekStep}">
+    <tspan>${this._options.seekStep}</tspan>
+  </text>
+</svg>`;
 
     const rateWrap = createElement("div", "ap-rate");
     const rateButton = createElement("button", "ap-btn ap-rate-btn");
@@ -772,16 +789,22 @@ export class AudioPlayer {
     this._updateTitle();
   }
 
+  _updateSeekStepLabels(buttonElement, label) {
+    buttonElement.setAttribute(
+      "aria-label",
+      `${label} ${this._options.seekStep} seconds`
+    );
+    const tspan = buttonElement.querySelector("tspan");
+    tspan.textContent = this._options.seekStep;
+    tspan.parentElement.setAttribute(
+      "data-num",
+      this._options.seekStep
+    );
+  }
+
   _updateSeekLabels() {
-    const seconds = this._options.seekStep;
-    this._dom.rewindBtn.setAttribute(
-      "aria-label",
-      `Rewind ${seconds} seconds`
-    );
-    this._dom.forwardBtn.setAttribute(
-      "aria-label",
-      `Forward ${seconds} seconds`
-    );
+    this._updateSeekStepLabels(this._dom.rewindBtn, "Rewind");
+    this._updateSeekStepLabels(this._dom.forwardBtn, "Forward");
   }
 
   _updateTitle() {
