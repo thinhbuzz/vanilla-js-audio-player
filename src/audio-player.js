@@ -483,21 +483,21 @@ export class AudioPlayer {
       </svg>
     `;
 
-    const backBtn = createElement("button", "ap-btn ap-back");
-    backBtn.type = "button";
-    backBtn.setAttribute("aria-label", "Rewind 10 seconds");
-    backBtn.innerHTML = `
-      <svg viewBox="0 0 1024 1024" class="ap-icon ap-icon-rewind" aria-hidden="true">
+    const rewind10Seconds = createElement("button", "ap-btn ap-rewind-10-seconds");
+    rewind10Seconds.type = "button";
+    rewind10Seconds.setAttribute("aria-label", "Rewind 10 seconds");
+    rewind10Seconds.innerHTML = `
+      <svg viewBox="0 0 1024 1024" class="ap-icon ap-icon-rewind-10-seconds" aria-hidden="true">
         <path fill="currentColor" d="M258.471 323.053c94.182-126.513 270.298-165.203 410.222-84.418 150.758 87.040 202.411 279.813 115.371 430.571s-279.813 202.411-430.571 115.371c-61.424-35.463-107.948-89.4-134.169-153.673-7.677-18.818-29.156-27.85-47.974-20.173s-27.85 29.156-20.173 47.974c32.339 79.269 89.818 145.906 165.517 189.611 185.96 107.364 423.747 43.649 531.111-142.311s43.649-423.747-142.311-531.111c-172.433-99.554-389.428-52.014-505.682 103.69l-27.226-78.49c-6.66-19.202-27.626-29.368-46.828-22.708s-29.368 27.626-22.708 46.828l52.434 151.164c5.36 15.452 20.275 25.513 36.61 24.694l159.799-8.011c20.299-1.018 35.929-18.298 34.911-38.596s-18.298-35.929-38.596-34.911l-89.738 4.499z" />
         <path fill="currentColor" d="M413.327 636.083h67.358v-252.083h-48.527c-2.173 7.358-4.949 13.589-8.329 18.693s-7.726 9.139-13.037 12.106c-5.311 2.967-11.709 5.103-19.193 6.409s-16.417 1.958-26.798 1.958v41.302h48.527v171.616zM596.807 554.192c0 17.803 1.569 29.849 4.708 36.139s8.208 9.435 15.21 9.435c7.001 0 12.071-3.145 15.21-9.435s4.708-18.336 4.708-36.139v-83.316c0-17.803-1.569-29.849-4.708-36.139s-8.208-9.435-15.21-9.435c-7.001 0-12.071 3.145-15.21 9.435s-4.708 18.336-4.708 36.139v83.316zM529.449 512.534c0-25.398 1.75-46.405 5.251-63.021s8.812-29.789 15.934-39.522c7.122-9.732 16.176-16.497 27.16-20.295s23.962-5.697 38.93-5.697c14.969 0 27.945 1.899 38.93 5.697s20.038 10.563 27.16 20.295c7.122 9.732 12.433 22.906 15.934 39.522s5.251 37.622 5.251 63.021c0 25.636-1.75 46.702-5.251 63.199s-8.812 29.552-15.934 39.166c-7.122 9.613-16.176 16.2-27.16 19.761s-23.962 5.341-38.93 5.341c-14.969 0-27.945-1.78-38.93-5.341s-20.038-10.147-27.16-19.761c-7.122-9.613-12.433-22.668-15.934-39.166s-5.251-37.563-5.251-63.199z" />
       </svg>
     `;
 
-    const forwardBtn = createElement("button", "ap-btn ap-forward");
-    forwardBtn.type = "button";
-    forwardBtn.setAttribute("aria-label", "Forward 10 seconds");
-    forwardBtn.innerHTML = `
-      <svg viewBox="0 0 1024 1024" class="ap-icon ap-icon-forward" aria-hidden="true">
+    const forward10Seconds = createElement("button", "ap-btn ap-forward-10-seconds");
+    forward10Seconds.type = "button";
+    forward10Seconds.setAttribute("aria-label", "Forward 10 seconds");
+    forward10Seconds.innerHTML = `
+      <svg viewBox="0 0 1024 1024" class="ap-icon ap-icon-forward-10-seconds" aria-hidden="true">
         <path fill="currentColor" d="M765.529 323.053c-94.182-126.513-270.298-165.203-410.222-84.418-150.758 87.040-202.411 279.813-115.371 430.571s279.813 202.411 430.571 115.371c61.424-35.463 107.948-89.4 134.169-153.673 7.677-18.818 29.156-27.85 47.974-20.173s27.85 29.156 20.173 47.974c-32.339 79.269-89.818 145.906-165.517 189.611-185.96 107.364-423.747 43.649-531.111-142.311s-43.649-423.747 142.311-531.111c172.433-99.554 389.428-52.014 505.682 103.69l27.226-78.49c6.66-19.202 27.626-29.368 46.828-22.708s29.368 27.626 22.708 46.828l-52.434 151.164c-5.36 15.452-20.275 25.513-36.61 24.694l-159.799-8.011c-20.299-1.018-35.929-18.298-34.911-38.596s18.298-35.929 38.596-34.911l89.738 4.499z" />
         <path fill="currentColor" d="M365.327 636.083h67.358v-252.083h-48.527c-2.173 7.358-4.949 13.589-8.329 18.693s-7.726 9.139-13.037 12.106c-5.311 2.967-11.709 5.103-19.193 6.409s-16.417 1.958-26.798 1.958v41.302h48.527v171.616zM548.807 554.192c0 17.803 1.569 29.849 4.708 36.139s8.208 9.435 15.21 9.435c7.001 0 12.071-3.145 15.21-9.435s4.708-18.336 4.708-36.139v-83.316c0-17.803-1.569-29.849-4.708-36.139s-8.208-9.435-15.21-9.435c-7.001 0-12.071 3.145-15.21 9.435s-4.708 18.336-4.708 36.139v83.316zM481.449 512.534c0-25.398 1.75-46.405 5.251-63.021s8.812-29.789 15.934-39.522c7.122-9.732 16.176-16.497 27.16-20.295s23.962-5.697 38.93-5.697c14.969 0 27.945 1.899 38.93 5.697s20.038 10.563 27.16 20.295c7.122 9.732 12.433 22.906 15.934 39.522s5.251 37.622 5.251 63.021c0 25.636-1.75 46.702-5.251 63.199s-8.812 29.552-15.934 39.166c-7.122 9.613-16.176 16.2-27.16 19.761s-23.962 5.341-38.93 5.341c-14.969 0-27.945-1.78-38.93-5.341s-20.038-10.147-27.16-19.761c-7.122-9.613-12.433-22.668-15.934-39.166s-5.251-37.563-5.251-63.199z" />
       </svg>
@@ -581,8 +581,8 @@ export class AudioPlayer {
     `;
 
     controls.appendChild(playBtn);
-    controls.appendChild(backBtn);
-    controls.appendChild(forwardBtn);
+    controls.appendChild(rewind10Seconds);
+    controls.appendChild(forward10Seconds);
     controls.appendChild(rateWrap);
     controls.appendChild(volumeWrap);
     controls.appendChild(downloadBtn);
@@ -621,8 +621,8 @@ export class AudioPlayer {
       root,
       title,
       playBtn,
-      backBtn,
-      forwardBtn,
+      rewind10Seconds,
+      forward10Seconds,
       rateWrap,
       rateButton,
       rateValue,
@@ -643,12 +643,12 @@ export class AudioPlayer {
   }
 
   _bindUI() {
-    const { playBtn, backBtn, forwardBtn, rateButton, rateSlider } = this._dom;
+    const { playBtn, rewind10Seconds, forward10Seconds, rateButton, rateSlider } = this._dom;
     const { muteBtn, volumeSlider, downloadBtn, progressRange } = this._dom;
 
     this._bind(playBtn, "click", () => this.toggle());
-    this._bind(backBtn, "click", () => this.seekBy(-this._options.seekStep));
-    this._bind(forwardBtn, "click", () => this.seekBy(this._options.seekStep));
+    this._bind(rewind10Seconds, "click", () => this.seekBy(-this._options.seekStep));
+    this._bind(forward10Seconds, "click", () => this.seekBy(this._options.seekStep));
     this._bind(rateButton, "click", (event) => {
       event.stopPropagation();
       this._toggleRatePopover();
