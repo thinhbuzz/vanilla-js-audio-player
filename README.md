@@ -51,6 +51,16 @@ const player = new AudioPlayer(container, options);
 
 ```js
 player.setOptions({ volume: 50 });
+player.setOptions({ theme: "dark" });
+```
+
+> `setOptions` không emit events (volumechange, mutechange, ratechange). Chỉ emit khi thay đổi qua UI.
+
+### Ví dụ resetOptions
+
+```js
+player.resetOptions();           // reset toàn bộ về mặc định
+player.resetOptions({ volume: 80 });  // reset nhưng giữ volume = 80
 ```
 
 ### Ví dụ lắng nghe events
@@ -83,14 +93,13 @@ const player = new AudioPlayer("#player", {
 ```js
 {
   src: "",
-  volume: 70,          // 0..100
+  volume: 100,         // 0..100
   muted: false,
   playbackRate: 1,
-  playbackRateMin: 0.5,
   playbackRateMin: 0.2,
   playbackRateMax: 2,
   playbackRateStep: 0.05,
-  seekStep: 10,
+  seekStep: 10,         // giây cho nút rewind/forward
   allowDownload: true,
   showTime: true,
   theme: "auto" | "light" | "dark",
@@ -102,7 +111,7 @@ const player = new AudioPlayer("#player", {
 ## API Reference (ngắn gọn)
 
 - `setOptions(optionsPartial)`
-- `resetOptions(optionsPartial)`
+- `resetOptions(partial?)` — reset về mặc định, có thể truyền `partial` để override
 - `getOptions()`
 - `load(src, meta?)`  
   `meta: { title, filename, allowDownload }`
