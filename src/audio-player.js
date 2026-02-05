@@ -28,6 +28,10 @@ export const EVENTS = [
   "download",
   "error",
   "srcchange",
+  // Playlist / transport-style events (Media Session aligned)
+  "nexttrack",
+  "previoustrack",
+  "stop",
 ];
 
 export function clampNumber(value, min, max) {
@@ -78,12 +82,19 @@ export class AudioPlayer {
       title: "",
       filename: null,
       allowDownload: undefined,
+      artist: "",
+      album: "",
+      artwork: null,
     };
+
+    this._mediaSessionSupported = false;
 
     this._options = this._mergeOptions(DEFAULT_OPTIONS, options, true);
 
     this._buildUI();
     this._bindUI();
+
+    this._setupMediaSession();
 
     this.setOptions(this._options, true);
 
@@ -295,6 +306,11 @@ export class AudioPlayer {
         : null;
     this._meta.allowDownload =
       typeof meta.allowDownload === "boolean" ? meta.allowDownload : undefined;
+    this._meta.artist =
+      typeof meta.artist === "string" ? meta.artist.trim() : "";
+    this._meta.album =
+      typeof meta.album === "string" ? meta.album.trim() : "";
+    this._meta.artwork = Array.isArray(meta.artwork) ? meta.artwork : null;
 
     this._options.src = src;
     this._audio.src = src;
@@ -310,6 +326,9 @@ export class AudioPlayer {
     this._dom.duration.textContent = "0:00";
     this._dom.progressRange.value = "0";
     this._dom.progressRange.max = "0";
+
+    this._updateMediaSessionMetadata();
+    this._updateMediaSessionPositionState();
 
     if (src !== previous) {
       this.emit("srcchange", { src });
@@ -720,6 +739,8 @@ export class AudioPlayer {
       this._updateRateUI();
       this._updateVolumeUI(true);
       this._updateDuration();
+      this._updateMediaSessionMetadata();
+      this._updateMediaSessionPositionState();
       this.emit("ready", {
         duration: this._audio.duration,
         src: this._audio.src,
@@ -759,6 +780,142 @@ export class AudioPlayer {
   _bind(el, event, handler, options) {
     el.addEventListener(event, handler, options);
     this._listeners.push({ el, event, handler, options });
+  }
+
+  _setupMediaSession() {
+    if (typeof navigator === "undefined" || !navigator.mediaSession) {
+      this._mediaSessionSupported = false;
+      return;
+    }
+
+    this._mediaSessionSupported = true;
+    const mediaSession = navigator.mediaSession;
+
+    try {
+      mediaSession.setActionHandler("play", () => {
+        this.play();
+      });
+      mediaSession.setActionHandler("pause", () => {
+        this.pause();
+      });
+      mediaSession.setActionHandler("seekbackward", (details) => {
+        const offset =
+          details && typeof details.seekOffset === "number"
+            ? details.seekOffset
+            : this._options.seekStep;
+        this.seekBy(-offset);
+      });
+      mediaSession.setActionHandler("seekforward", (details) => {
+        const offset =
+          details && typeof details.seekOffset === "number"
+            ? details.seekOffset
+            : this._options.seekStep;
+        this.seekBy(offset);
+      });
+      mediaSession.setActionHandler("seekto", (details) => {
+        if (!details || typeof details.seekTime !== "number") return;
+        if (details.fastSeek && typeof this._audio.fastSeek === "function") {
+          this._audio.fastSeek(details.seekTime);
+        } else {
+          this.seek(details.seekTime);
+        }
+      });
+      mediaSession.setActionHandler("stop", () => {
+        this.pause();
+        this.seek(0);
+        this.emit("stop");
+      });
+      mediaSession.setActionHandler("previoustrack", () => {
+        this.emit("previoustrack");
+      });
+      mediaSession.setActionHandler("nexttrack", () => {
+        this.emit("nexttrack");
+      });
+    } catch (error) {
+      // In some environments, individual action handlers may throw.
+      console.warn("[AudioPlayer] Failed to setup Media Session:", error);
+      this._mediaSessionSupported = false;
+    }
+  }
+
+  _updateMediaSessionMetadata() {
+    if (
+      !this._mediaSessionSupported ||
+      typeof navigator === "undefined" ||
+      !navigator.mediaSession
+    ) {
+      return;
+    }
+
+    if (typeof window === "undefined" || typeof window.MediaMetadata !== "function") {
+      return;
+    }
+
+    const init = {
+      title: this._meta.title || "",
+    };
+
+    if (this._meta.artist) init.artist = this._meta.artist;
+    if (this._meta.album) init.album = this._meta.album;
+    if (
+      this._meta.artwork &&
+      Array.isArray(this._meta.artwork) &&
+      this._meta.artwork.length
+    ) {
+      init.artwork = this._meta.artwork;
+    }
+
+    try {
+      navigator.mediaSession.metadata = new window.MediaMetadata(init);
+    } catch {
+      // ignore metadata errors
+    }
+  }
+
+  _updateMediaSessionPlaybackState() {
+    if (
+      !this._mediaSessionSupported ||
+      typeof navigator === "undefined" ||
+      !navigator.mediaSession
+    ) {
+      return;
+    }
+
+    try {
+      navigator.mediaSession.playbackState =
+        this._audio && !this._audio.paused ? "playing" : "paused";
+    } catch {
+      // ignore state errors
+    }
+  }
+
+  _updateMediaSessionPositionState() {
+    if (
+      !this._mediaSessionSupported ||
+      typeof navigator === "undefined" ||
+      !navigator.mediaSession ||
+      typeof navigator.mediaSession.setPositionState !== "function"
+    ) {
+      return;
+    }
+
+    const duration = Number.isFinite(this._audio.duration)
+      ? this._audio.duration
+      : 0;
+    const position = Number.isFinite(this._audio.currentTime)
+      ? this._audio.currentTime
+      : 0;
+    const rate = this._audio.playbackRate || 1;
+
+    try {
+      navigator.mediaSession.setPositionState({
+        duration,
+        playbackRate: rate,
+        position,
+      });
+    } catch {
+      // ignore state errors
+    }
   }
 
   _applyOptions() {
@@ -828,6 +985,7 @@ export class AudioPlayer {
     rateValue.textContent = formatRate(rate);
     ratePopoverValue.textContent = formatRate(rate);
     rateSlider.value = String(rate);
+    this._updateMediaSessionPositionState();
   }
 
   _handleRateInput(value) {
@@ -884,6 +1042,8 @@ export class AudioPlayer {
     const isPlaying = !this._audio.paused;
     this._dom.root.classList.toggle("ap-playing", isPlaying);
     this._dom.playBtn.setAttribute("aria-label", isPlaying ? "Pause" : "Play");
+    this._updateMediaSessionPlaybackState();
+    this._updateMediaSessionPositionState();
   }
 
   _handleSeekKeys(event) {
@@ -930,6 +1090,7 @@ export class AudioPlayer {
     this._dom.currentTime.textContent = formatTime(current);
 
     this.emit("timeupdate", { currentTime: current, duration });
+    this._updateMediaSessionPositionState();
   }
 
   _startProgressLoop() {
